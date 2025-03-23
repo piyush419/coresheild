@@ -3,12 +3,10 @@ import dotenv from 'dotenv'
 const app = express();
 dotenv.config()
 
-
-// Set EJS as the view engine
 app.set('view engine', 'ejs');
-app.set('views', './views'); // Define views folder
+app.set('views', './views'); 
 
-// Data
+
 const locations = [
     { "id": "loc_01", "latitude": 37.7749, "longitude": -122.4194 },
     { "id": "loc_04", "latitude": 27.8749, "longitude": 122.4194 },
@@ -31,11 +29,11 @@ const metadata = [
     { "id": "loc_08", "type": "cafe", "rating": 4.5, "reviews": 750 }
 ];
 
-// Route to process data and render EJS page
+
 app.get('/', (req, res) => {
     const mergedData = [];
 
-    // Merge data based on `id`
+   
     for (let i = 0; i < metadata.length; i++) {
         const meta = metadata[i];
         const loc = locations.find(location => location.id === meta.id);
@@ -44,7 +42,7 @@ app.get('/', (req, res) => {
         }
     }
 
-    // Count valid points per type
+   
     const typeCount = {};
     const typeRatingSum = {};
     const typeReviewSum = {};
@@ -58,13 +56,13 @@ app.get('/', (req, res) => {
         typeReviewSum[type] = (typeReviewSum[type] || 0) + reviews;
     }
 
-    // Calculate average rating per type
+    
     const typeAvgRating = {};
     for (const type in typeCount) {
         typeAvgRating[type] = typeRatingSum[type] / typeCount[type];
     }
 
-    // Find the location with the highest number of reviews
+   
     let maxReviews = 0;
     let topLocation = null;
     for (let i = 0; i < mergedData.length; i++) {
@@ -75,10 +73,10 @@ app.get('/', (req, res) => {
         }
     }
 
-    // Find incomplete data
+    
     const incompleteData = mergedData.filter(loc => Object.values(loc).includes(null) || Object.values(loc).includes(''));
 
-    // Render the result using EJS
+    
     res.render('index', {
         typeCount,
         typeAvgRating,
@@ -87,7 +85,7 @@ app.get('/', (req, res) => {
     });
 });
 
-// Set the port
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
